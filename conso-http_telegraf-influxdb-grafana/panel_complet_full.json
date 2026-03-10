@@ -1,0 +1,218 @@
+{
+  "uid": "acces-secure-v3",
+  "title": "Acc\u00e8s S\u00e9curis\u00e9 - Complet 2",
+  "timezone": "browser",
+  "schemaVersion": 41,
+  "version": 1,
+  "refresh": "10s",
+  "editable": true,
+  "preload": false,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "tags": [],
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "templating": {
+    "list": []
+  },
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "links": [],
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "\u00c9v\u00e9nements (5 min)",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "ceo4ngegivldsf"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "query": "from(bucket: \"access_logs\") |> range(start: -5m) |> filter(fn: (r) => r._measurement == \"http_listener_v2\" and r._field == \"access\") |> group() |> count()"
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "pluginVersion": "12.0.1"
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Refus d\u00e9tect\u00e9s (5 min)",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "ceo4ngegivldsf"
+      },
+      "targets": [
+        {
+          "refId": "B",
+          "query": "from(bucket: \"access_logs\") |> range(start: -5m) |> filter(fn: (r) => r._measurement == \"http_listener_v2\" and r._field == \"access\" and r.status == \"refused\") |> group() |> count()"
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 0
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "value": 1,
+                "color": "red"
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "pluginVersion": "12.0.1"
+    },
+    {
+      "id": 3,
+      "type": "table",
+      "title": "Historique des acc\u00e8s (10 min)",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "ceo4ngegivldsf"
+      },
+      "targets": [
+        {
+          "refId": "C",
+          "query": "from(bucket: \"access_logs\") |> range(start: -10m) |> filter(fn: (r) => r._measurement == \"http_listener_v2\" and r._field == \"access\") |> drop(columns: [\"_start\", \"_stop\", \"_measurement\", \"_field\"]) |> group() |> sort(columns: [\"_time\"]) |> rename(columns: {_value: \"access\"})"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 4
+      },
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "show": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "countRows": false
+        },
+        "showHeader": true
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "value": 80,
+                "color": "red"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "pluginVersion": "12.0.1"
+    }
+  ],
+  "id": null
+}

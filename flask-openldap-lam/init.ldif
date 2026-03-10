@@ -1,0 +1,27 @@
+dn: ou=people,dc=example,dc=org
+objectClass: organizationalUnit
+ou: people
+
+# Utilisateur avec badge autorisé
+dn: uid=user01,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: Alice Dupont
+sn: Dupont
+uid: user01
+userPassword: password1
+employeeNumber: 01020304
+
+# Utilisateur avec badge non autorisé
+dn: uid=user02,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: Bob Martin
+sn: Martin
+uid: user02
+userPassword: password2
+employeeNumber: 00000000

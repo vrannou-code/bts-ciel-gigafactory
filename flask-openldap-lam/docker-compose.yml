@@ -1,0 +1,55 @@
+services:
+  flask:
+    build: ./flask_auth
+    container_name: flask_auth
+    ports:
+      - "5000:5000"
+    depends_on:
+      - openldap
+    volumes:
+      - ./flask_auth:/app
+    networks:
+      - s10_net    
+      
+  openldap:
+    image: bitnami/openldap:latest
+    container_name: openldap
+    ports:
+      - "389:389"
+    environment:
+      - LDAP_PORT_NUMBER=389
+      - LDAP_ROOT=dc=example,dc=org
+      - LDAP_ADMIN_USERNAME=admin
+      - LDAP_ADMIN_PASSWORD=admin
+    volumes:
+      - ldap_data:/bitnami/openldap
+    command: ["/opt/bitnami/scripts/openldap/run.sh"]
+    networks:
+      - s10_net 
+
+  lam:
+    image: ghcr.io/ldapaccountmanager/lam:stable
+    container_name: lam
+    ports:
+      - "8080:80"
+    depends_on:
+      - openldap
+    environment:
+      - LAM_SKIP_PRECONFIGURE=true
+    volumes:
+      - lam_data:/var/lib/ldap-account-manager#
+      - lam_config:/var/lib/ldap-account-manager/config  
+
+    networks:
+      - s10_net 
+
+volumes:
+  ldap_data:
+  lam_data:
+  lam_config:
+  
+networks:
+  s10_net:
+    name: s10_net
+    driver: bridge
+
